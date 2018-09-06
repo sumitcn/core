@@ -4368,14 +4368,6 @@ static void UnHideRedlines(SwRootFrame & rLayout,
                     auto const pFrame(static_cast<SwContentNode&>(rNode).getLayoutFrame(&rLayout));
                     assert(!pFrame || static_cast<SwTextFrame*>(pFrame)->GetMergedPara()->pFirstNode != &rNode);
                 }
-                else if (rNode.IsTableNode())
-                {
-                    static_cast<SwTableNode&>(rNode).DelFrames(&rLayout);
-                }
-                else if (rNode.IsSectionNode())
-                {
-                    static_cast<SwSectionNode&>(rNode).DelFrames(&rLayout);
-                }
             }
             else
             {

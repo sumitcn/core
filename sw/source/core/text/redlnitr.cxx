@@ -58,6 +58,8 @@ CheckParaRedlineMerge(SwTextFrame & rFrame, SwTextNode & rTextNode,
     }
     bool bHaveRedlines(false);
     std::vector<SwTextNode *> nodes{ &rTextNode };
+    std::vector<SwTableNode *> tables;
+    std::vector<SwSectionNode *> sections;
     std::vector<sw::Extent> extents;
     OUStringBuffer mergedText;
     SwTextNode const* pParaPropsNode(nullptr);
@@ -94,6 +96,21 @@ CheckParaRedlineMerge(SwTextFrame & rFrame, SwTextNode & rTextNode,
             for (sal_uLong j = pNode->GetIndex() + 1; j < pEnd->nNode.GetIndex(); ++j)
             {
                 SwNode *const pTmp(pNode->GetNodes()[j]);
+                if (nLevel == 0)
+                {
+                    if (pTmp->IsTextNode())
+                    {
+                        nodes.push_back(pTmp->GetTextNode());
+                    }
+                    else if (pTmp->IsTableNode())
+                    {
+                        tables.push_back(pTmp->GetTableNode());
+                    }
+                    else if (pTmp->IsSectionNode())
+                    {
+                        sections.push_back(pTmp->GetSectionNode());
+                    }
+                }
                 if (pTmp->IsStartNode())
                 {
                     ++nLevel;
@@ -101,10 +118,6 @@ CheckParaRedlineMerge(SwTextFrame & rFrame, SwTextNode & rTextNode,
                 else if (pTmp->IsEndNode())
                 {
                     --nLevel;
-                }
-                else if (nLevel == 0 && pTmp->IsTextNode())
-                {
-                    nodes.push_back(pTmp->GetTextNode());
                 }
                 pTmp->SetRedlineMergeFlag(SwNode::Merge::Hidden);
             }
@@ -179,6 +192,15 @@ CheckParaRedlineMerge(SwTextFrame & rFrame, SwTextNode & rTextNode,
         for (auto iter = ++nodes.begin(); iter != nodes.end(); ++iter)
         {
             (**iter).DelFrames(rFrame.getRootFrame());
+        }
+        // also delete tables & sections here; not necessary, but convenient
+        for (auto const pTableNode : tables)
+        {
+            pTableNode->DelFrames(rFrame.getRootFrame());
+        }
+        for (auto const pSectionNode : sections)
+        {
+            pSectionNode->DelFrames(rFrame.getRootFrame());
         }
     }
     auto pRet(o3tl::make_unique<sw::MergedPara>(rFrame, std::move(extents),

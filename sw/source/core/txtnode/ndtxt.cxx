@@ -365,13 +365,18 @@ static void lcl_ChangeFootnoteRef( SwTextNode &rNode )
     }
 }
 
-namespace {
+namespace sw {
 
 // check if there are flys on the existing frames (now on "pNode")
 // that need to be moved to the new frames of "this"
 void MoveMergedFlysAndFootnotes(std::vector<SwTextFrame*> const& rFrames,
-        SwTextNode const& rFirstNode, SwTextNode const& rSecondNode)
+        SwTextNode const& rFirstNode, SwTextNode & rSecondNode,
+        bool isSplitNode)
 {
+    if (!isSplitNode)
+    {
+        lcl_ChangeFootnoteRef(rSecondNode);
+    }
     int nLevel(0);
     for (sal_uLong nIndex = rSecondNode.GetIndex() + 1; ; ++nIndex)
     {
@@ -608,7 +613,7 @@ SwTextNode *SwTextNode::SplitContentNode(const SwPosition & rPos,
         }
         if (eOldMergeFlag != SwNode::Merge::None)
         {
-            MoveMergedFlysAndFootnotes(frames, *pNode, *this);
+            MoveMergedFlysAndFootnotes(frames, *pNode, *this, true);
         }
     }
     else
@@ -739,7 +744,7 @@ SwTextNode *SwTextNode::SplitContentNode(const SwPosition & rPos,
 
         if (bRecreateThis)
         {
-            MoveMergedFlysAndFootnotes(frames, *pNode, *this);
+            MoveMergedFlysAndFootnotes(frames, *pNode, *this, true);
         }
     }
 

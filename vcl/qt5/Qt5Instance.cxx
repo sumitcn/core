@@ -93,9 +93,10 @@ SalObject* Qt5Instance::CreateObject(SalFrame* pParent, SystemWindowData*, bool 
 void Qt5Instance::DestroyObject(SalObject* pObject) { delete pObject; }
 
 std::unique_ptr<SalVirtualDevice>
-Qt5Instance::CreateVirtualDevice(SalGraphics* pGraphics, long& nDX, long& nDY, DeviceFormat eFormat,
+Qt5Instance::CreateVirtualDevice(SalGraphics* /* pGraphics */, long& nDX, long& nDY, DeviceFormat eFormat,
                                  const SystemGraphicsData* /* pData */)
 {
+#ifndef _WIN32
     if (m_bUseCairo)
     {
         SvpSalGraphics* pSvpSalGraphics = dynamic_cast<SvpSalGraphics*>(pGraphics);
@@ -106,6 +107,7 @@ Qt5Instance::CreateVirtualDevice(SalGraphics* pGraphics, long& nDX, long& nDY, D
         return pVD;
     }
     else
+#endif
     {
         std::unique_ptr<SalVirtualDevice> pVD(new Qt5VirtualDevice(eFormat, 1));
         pVD->SetSize(nDX, nDY);
@@ -265,23 +267,27 @@ VCLPLUG_QT5_PUBLIC SalInstance* create_SalInstance()
     for (int i = 0; i < nFakeArgc; i++)
         pFakeArgv[i] = pFakeArgvFreeable[i];
 
+#ifndef _WIN32
     char* session_manager = nullptr;
     if (getenv("SESSION_MANAGER") != nullptr)
     {
         session_manager = strdup(getenv("SESSION_MANAGER"));
         unsetenv("SESSION_MANAGER");
     }
+#endif
 
     int* pFakeArgc = new int;
     *pFakeArgc = nFakeArgc;
     pQApplication = new QApplication(*pFakeArgc, pFakeArgv);
 
+#ifndef _WIN32
     if (session_manager != nullptr)
     {
         // coverity[tainted_string] - trusted source for setenv
         setenv("SESSION_MANAGER", session_manager, 1);
         free(session_manager);
     }
+#endif
 
     QApplication::setQuitOnLastWindowClosed(false);
 

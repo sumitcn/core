@@ -24,7 +24,7 @@
 
 #include "Qt5Tools.hxx"
 
-#include <headless/svpgdi.hxx>
+// #include <headless/svpgdi.hxx>
 #include <vcl/svapp.hxx>
 
 class Qt5Graphics;
@@ -37,6 +37,18 @@ class QScreen;
 class QImage;
 class SvpSalGraphics;
 
+#ifdef WIN32
+typedef void (*damageHandler)(void* handle,
+                              sal_Int32 nExtentsX, sal_Int32 nExtentsY,
+                              sal_Int32 nExtentsWidth, sal_Int32 nExtentsHeight);
+
+struct VCL_DLLPUBLIC DamageHandler
+{
+    void *handle;
+    damageHandler damaged;
+};
+#endif
+
 class VCLPLUG_QT5_PUBLIC Qt5Frame : public SalFrame
 {
     friend class Qt5Widget;
@@ -47,12 +59,14 @@ class VCLPLUG_QT5_PUBLIC Qt5Frame : public SalFrame
     const bool m_bUseCairo;
     std::unique_ptr<QImage> m_pQImage;
     std::unique_ptr<Qt5Graphics> m_pQt5Graphics;
+#ifndef WIN32
     UniqueCairoSurface m_pSurface;
     std::unique_ptr<SvpSalGraphics> m_pOurSvpGraphics;
     // in base class, this ptr is the same as m_pOurSvpGraphic
     // in derived class, it can point to a derivative
     // of SvpSalGraphics (which the derived class then owns)
     SvpSalGraphics* m_pSvpGraphics;
+#endif
     DamageHandler m_aDamageHandler;
     QRegion m_aRegion;
     bool m_bNullRegion;

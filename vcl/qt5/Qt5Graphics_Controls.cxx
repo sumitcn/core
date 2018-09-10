@@ -594,9 +594,7 @@ bool Qt5Graphics_Controls::drawNativeControl(ControlType type, ControlPart part,
     }
     else if (type == ControlType::Progress && part == ControlPart::Entire)
     {
-        SAL_WNODEPRECATED_DECLARATIONS_PUSH
-        QStyleOptionProgressBarV2 option;
-        SAL_WNODEPRECATED_DECLARATIONS_POP
+        QStyleOptionProgressBar option;
         option.minimum = 0;
         option.maximum = widgetRect.width();
         option.progress = value.getNumericVal();
@@ -800,6 +798,7 @@ bool Qt5Graphics_Controls::getNativeControlRegion(ControlType type, ControlPart 
                     retVal = true;
                     break;
                 default:
+                    h = 0; w = 0;
                     break;
             }
             if (retVal)

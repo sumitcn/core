@@ -1063,7 +1063,7 @@ int CALLBACK SalEnumFontsProcExW( const LOGFONTW* lpelfe,
         pData->SetFontId( sal_IntPtr( pInfo->mnFontCount++ ) );
 
         pInfo->mpList->Add( pData.get() );
-        SAL_WARN("vcl.fonts", "SalEnumFontsProcExW: font added: " << pData->GetFamilyName() << " " << pData->GetStyleName());
+        SAL_INFO("vcl.fonts", "SalEnumFontsProcExW: font added: " << pData->GetFamilyName() << " " << pData->GetStyleName());
     }
 
     return 1;
@@ -1230,7 +1230,7 @@ static bool ImplGetFontAttrFromFile( const OUString& rFontFileURL,
 bool WinSalGraphics::AddTempDevFont( PhysicalFontCollection* pFontCollection,
     const OUString& rFontFileURL, const OUString& rFontName )
 {
-    SAL_WARN( "vcl.fonts", "WinSalGraphics::AddTempDevFont(): " << rFontFileURL );
+    SAL_INFO( "vcl.fonts", "WinSalGraphics::AddTempDevFont(): " << rFontFileURL );
 
     FontAttributes aDFA;
     aDFA.SetFamilyName(rFontName);

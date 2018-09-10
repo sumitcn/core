@@ -401,6 +401,8 @@ $(eval $(call gb_Helper_register_libraries_for_install,OOOLIBS,ooo, \
 	$(if $(MERGELIBS),merged) \
 	migrationoo2 \
 	migrationoo3 \
+	mork \
+	mozbootstrap \
 	msfilter \
 	$(call gb_Helper_optional,SCRIPTING,msforms) \
 	mtfrenderer \
@@ -459,9 +461,6 @@ $(eval $(call gb_Helper_register_libraries_for_install,OOOLIBS,ooo, \
 	) \
 	vcl \
 	vclcanvas \
-	$(if $(USING_X11), \
-		vclplug_gen \
-	) \
 	writerperfect \
 	xmlscript \
 	xmlfa \
@@ -470,12 +469,14 @@ $(eval $(call gb_Helper_register_libraries_for_install,OOOLIBS,ooo, \
 	xof \
 	xsltdlg \
 	xsltfilter \
-	mork \
-	mozbootstrap \
+	$(if $(USING_X11), \
+		vclplug_gen \
+	) \
 	$(if $(filter $(OS),WNT), \
 		ado \
 		oleautobridge \
 		smplmail \
+		vclplug_win \
 		wininetbe1 \
 	) \
 	$(if $(filter $(OS),MACOSX), \
@@ -652,6 +653,7 @@ $(eval $(call gb_Helper_register_libraries_for_install,PLAINLIBS_OOO,ooo, \
 		inprocserv \
 		UAccCOM \
 		winaccessibility \
+        $(if $(ENABLE_QT5),vclplug_qt5) \
 	) \
 ))
 

@@ -732,29 +732,9 @@ endif
 
 ifeq ($(OS),WNT)
 $(eval $(call gb_Library_add_exception_objects,vcl,\
-    vcl/opengl/win/gdiimpl \
     vcl/opengl/win/WinDeviceInfo \
     vcl/opengl/win/blocklist_parser \
-    vcl/win/app/saldata \
-    vcl/win/app/salinfo \
-    vcl/win/app/salinst \
-    vcl/win/app/salshl \
-    vcl/win/app/saltimer \
-    vcl/win/gdi/gdiimpl \
-    vcl/win/gdi/salbmp \
-    vcl/win/gdi/salgdi \
-    vcl/win/gdi/salgdi2 \
-    vcl/win/gdi/salfont \
-    vcl/win/gdi/salgdi_gdiplus \
-    vcl/win/gdi/salnativewidgets-luna \
-    vcl/win/gdi/salprn \
-    vcl/win/gdi/salvd \
-    vcl/win/gdi/winlayout \
-    vcl/win/gdi/DWriteTextRenderer \
-    vcl/win/window/salframe \
-    vcl/win/window/keynames \
-    vcl/win/window/salmenu \
-    vcl/win/window/salobj \
+    vcl/win/plugadapt/salplug \
 ))
 
 $(eval $(call gb_Library_use_system_win32_libs,vcl,\
@@ -775,9 +755,7 @@ $(eval $(call gb_Library_use_system_win32_libs,vcl,\
 ))
 
 $(eval $(call gb_Library_add_nativeres,vcl,vcl/salsrc))
-endif
 
-ifeq ($(OS),WNT)
 # HACK: dependency on icon themes so running unit tests don't
 # prevent delivering these by having open file handles on WNT
 $(eval $(call gb_Library_use_package,vcl,postprocess_images))

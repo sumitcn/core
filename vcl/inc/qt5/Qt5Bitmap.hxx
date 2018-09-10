@@ -25,7 +25,8 @@
 
 class QImage;
 
-class VCL_DLLPUBLIC Qt5Bitmap : public SalBitmap
+class Qt5Bitmap : public SalBitmap
+// class VCL_DLLPUBLIC Qt5Bitmap : public SalBitmap
 {
     std::unique_ptr<QImage> m_pImage;
     BitmapPalette m_aPalette;

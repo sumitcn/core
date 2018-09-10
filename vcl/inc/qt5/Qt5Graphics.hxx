@@ -38,7 +38,7 @@ class Qt5FontFace;
 class Qt5Frame;
 class Qt5Painter;
 
-class Qt5Graphics : public SalGraphics
+class SAL_DLLPRIVATE Qt5Graphics : public SalGraphics
 {
     friend class Qt5Bitmap;
     friend class Qt5Painter;

@@ -1016,12 +1016,6 @@ std::shared_ptr<SalBitmap> WinSalInstance::CreateSalBitmap()
         return std::make_shared<WinSalBitmap>();
 }
 
-const OUString& SalGetDesktopEnvironment()
-{
-    static OUString aDesktopEnvironment( "Windows" );
-    return aDesktopEnvironment;
-}
-
 int WinSalInstance::WorkaroundExceptionHandlingInUSER32Lib(int, LPEXCEPTION_POINTERS pExceptionInfo)
 {
     // Decide if an exception is a c++ (mostly UNO) exception or a process violation.

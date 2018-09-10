@@ -18,7 +18,7 @@
  */
 
 #include <Qt5Instance.hxx>
-#include <Qt5Printer.hxx>
+// #include <Qt5Printer.hxx>
 
 #include <vcl/svapp.hxx>
 #include <vcl/timer.hxx>
@@ -29,7 +29,9 @@
 #include <salptype.hxx>
 #include <saldatabasic.hxx>
 
+#ifndef _WIN32
 #include <unx/genpspgraphics.h>
+#endif
 
 using namespace psp;
 
@@ -37,6 +39,7 @@ using namespace psp;
  *  static helpers
  */
 
+#ifndef _WIN32
 static OUString getPdfDir(const PrinterInfo& rInfo)
 {
     OUString aDir;
@@ -55,30 +58,40 @@ static OUString getPdfDir(const PrinterInfo& rInfo)
     }
     return aDir;
 }
+#endif
 
-SalInfoPrinter* Qt5Instance::CreateInfoPrinter(SalPrinterQueueInfo* pQueueInfo,
-                                               ImplJobSetup* pJobSetup)
+SalInfoPrinter* Qt5Instance::CreateInfoPrinter(SalPrinterQueueInfo* /* pQueueInfo */,
+                                               ImplJobSetup* /* pJobSetup */)
 {
+#ifndef _WIN32
     // create and initialize SalInfoPrinter
     PspSalInfoPrinter* pPrinter = new PspSalInfoPrinter;
     configurePspInfoPrinter(pPrinter, pQueueInfo, pJobSetup);
 
     return pPrinter;
+#else
+    return nullptr;
+#endif
 }
 
 void Qt5Instance::DestroyInfoPrinter(SalInfoPrinter* pPrinter) { delete pPrinter; }
 
-std::unique_ptr<SalPrinter> Qt5Instance::CreatePrinter(SalInfoPrinter* pInfoPrinter)
+std::unique_ptr<SalPrinter> Qt5Instance::CreatePrinter(SalInfoPrinter* /* pInfoPrinter */)
 {
+#ifndef _WIN32
     // create and initialize SalPrinter
     Qt5Printer* pPrinter = new Qt5Printer(pInfoPrinter);
     pPrinter->m_aJobData = static_cast<PspSalInfoPrinter*>(pInfoPrinter)->m_aJobData;
 
     return std::unique_ptr<SalPrinter>(pPrinter);
+#else
+    return std::unique_ptr<SalPrinter>();
+#endif
 }
 
-void Qt5Instance::GetPrinterQueueInfo(ImplPrnQueueList* pList)
+void Qt5Instance::GetPrinterQueueInfo(ImplPrnQueueList* /* pList */)
 {
+#ifndef _WIN32
     PrinterInfoManager& rManager(PrinterInfoManager::get());
     static const char* pNoSyncDetection = getenv("SAL_DISABLE_SYNCHRONOUS_PRINTER_DETECTION");
     if (!pNoSyncDetection || !*pNoSyncDetection)
@@ -112,6 +125,7 @@ void Qt5Instance::GetPrinterQueueInfo(ImplPrnQueueList* pList)
 
         pList->Add(pInfo);
     }
+#endif
 }
 
 void Qt5Instance::DeletePrinterQueueInfo(SalPrinterQueueInfo* pInfo) { delete pInfo; }
@@ -120,12 +134,20 @@ void Qt5Instance::GetPrinterQueueState(SalPrinterQueueInfo*) {}
 
 OUString Qt5Instance::GetDefaultPrinter()
 {
+#ifndef _WIN32
     PrinterInfoManager& rManager(PrinterInfoManager::get());
     return rManager.getDefaultPrinter();
+#else
+    return OUString();
+#endif
 }
 
 void Qt5Instance::PostPrintersChanged() {}
 
+#ifndef _WIN32
 GenPspGraphics* Qt5Instance::CreatePrintGraphics() { return new GenPspGraphics(); }
+#else
+GenPspGraphics* Qt5Instance::CreatePrintGraphics() { return nullptr; }
+#endif
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

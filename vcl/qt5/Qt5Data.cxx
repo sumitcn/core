@@ -149,11 +149,13 @@
 #include <unx/x11_cursors/wsshow_curs.h>
 #include <unx/x11_cursors/wsshow_mask.h>
 
-#include <unx/glyphcache.hxx>
+// #include <unx/glyphcache.hxx>
 
-Qt5Data::Qt5Data(SalInstance* pInstance)
+Qt5Data::Qt5Data(SalInstance* /* pInstance */)
+#ifndef _WIN32
     : GenericUnixSalData(SAL_DATA_QT5, pInstance)
     , m_pGlyphCache(new GlyphCache())
+#endif
 {
     ImplSVData* pSVData = ImplGetSVData();
 
@@ -309,9 +311,11 @@ QCursor& Qt5Data::getCursor(PointerStyle ePointerStyle)
     return *m_aCursors[ePointerStyle];
 }
 
+#if 0
 void Qt5Data::ErrorTrapPush() {}
 
 bool Qt5Data::ErrorTrapPop(bool /*bIgnoreError*/) { return false; }
+#endif
 
 bool Qt5Data::noNativeControls()
 {

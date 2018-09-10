@@ -26,7 +26,7 @@ struct PackedTexture;
  * [2]: https://github.com/lukaszdk/texture-atlas-generator
  *
  */
-class VCL_PLUGIN_PUBLIC PackedTextureAtlasManager
+class VCL_DLLPUBLIC PackedTextureAtlasManager final
 {
     std::vector<std::unique_ptr<PackedTexture>> maPackedTextures;
 
@@ -43,6 +43,7 @@ public:
      */
     PackedTextureAtlasManager(int nTextureWidth, int nTextureHeight);
     ~PackedTextureAtlasManager();
+
     OpenGLTexture InsertBuffer(int nWidth, int nHeight, int nFormat, int nType, sal_uInt8 const * pData);
     OpenGLTexture Reserve(int nWidth, int nHeight);
     std::vector<GLuint> ReduceTextureNumber(int nMaxNumberOfTextures);
